@@ -1,18 +1,22 @@
-#include "Wordle.h"
 #include <cassert>
 #include <iostream>
+#include "Wordle.h"
+
 
 void testGetGuessResult() {
     Wordle game({});
 
     auto result = game.getGuessResult("glass", "sassy");
-    assert(result == std::vector<char>{'o','o','.','X','.'});
+    auto expected = std::vector<char>{'o','o','.','X','.'};
+    assert(result == expected);
 
     result = game.getGuessResult("those", "geese");
-    assert(result == std::vector<char>{'.','.','.','X','X'});
+    expected = std::vector<char>{'.','.','.','X','X'};
+    assert(result == expected);
 
     result = game.getGuessResult("dread", "added");
-    assert(result == std::vector<char>{'o','o','.','o','X'});
+    expected = std::vector<char>{'o','o','.','o','X'};
+    assert(result == expected);
 
     std::cout << "All getGuessResult tests passed.\n";
 }
