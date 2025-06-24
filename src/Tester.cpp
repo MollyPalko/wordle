@@ -1,4 +1,5 @@
 #include <iostream>
+#include <algorithm>
 #include "Wordle.h"
 
 
@@ -25,9 +26,61 @@ void printResults(string methodName) {
     " of " << totalTests << " tests " << msg << endl;
 }
 
-void testSelectRandomWord() {}
 
-void testIsKnownWord() {}
+// TODO: work on refactoring so loadWords() is a common file
+// this way this file can be refactored for more robust testing
+void testSelectRandomWord(std::vector<std::string> words, int n);
+void testSelectRandomWord() {
+  std::vector<std::string> dict = {"foo","bar","baz","qux","quux"};
+  testSelectRandomWord(dict, 10000);
+}
+void testSelectRandomWord(std::vector<std::string> words, int n) {
+  std::sort(words.begin(), words.end());
+  Wordle wordle(words);
+
+  std::vector<int> counts(words.size(), 0);
+
+  for (int i = 0; i < n; i++) {
+    std::string word = wordle.selectRandomWord();
+
+    auto it = std::lower_bound(words.begin(),words.end(), word);
+    int index = (it != words.end() && *it == word) 
+      ? std::distance(words.begin(), it) : -1;
+    countTest(index >= 0);
+    if (index >= 0) counts[index]++;
+  }
+
+  double expected = static_cast<double>(n) /words.size();
+  for (int i = 0; i < (int)counts.size(); i++) {
+    countTest(counts[i] > expected * 0.9);
+    countTest(counts[i] < expected * 1.1);
+  }
+}
+
+void testKnownWords(std::vector<std::string> dict, bool expected,
+    std::vector<std::string> testWords);
+void testIsKnownWord() {
+  std::vector<std::string> dict = { "foo", "bar", "baz", "qux"};
+  testKnownWords(dict, true, dict);
+
+  std::vector<std::string> list = {"boo", "bat", "qui"};
+  testKnownWords(dict, false, list);
+
+  list = {"ab", "ek", "zz"};
+  testKnownWords(dict, false, list);
+
+
+
+  //testKnownWords("data/words_two.txt",false,); // load file
+}
+void testKnownWords(std::vector<std::string> dict, bool expected, 
+    std::vector<std::string> testWords) {
+  Wordle wordle(dict);
+
+  for (std::string s : testWords) {
+    countTest(wordle.isKnownWord(s) == expected);
+  }
+}
 
 
 void testGetGuessResult() {
