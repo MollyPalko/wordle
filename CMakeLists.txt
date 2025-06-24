@@ -16,7 +16,7 @@ add_executable(wordle src/main.cpp ${SOURCES})
 option(BUILD_TESTS "Build Wordle test executable" OFF)
 
 if(BUILD_TESTS)
-    add_executable(wordle_tests src/Tester.cpp ${SOURCES})
+    add_executable(test_wordle src/Tester.cpp ${SOURCES})
 endif()
 
 
