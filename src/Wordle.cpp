@@ -1,5 +1,6 @@
 #include "Wordle.h"
 #include <cstdlib>
+#include <ctime>
 #include <algorithm>
 
 
@@ -8,6 +9,7 @@ Wordle::Wordle(const std::vector<std::string>& wordList) : words(wordList){}
 
 std::string Wordle::selectRandomWord()
 {
+  srand(static_cast<unsigned int>(time(nullptr)));
   int i = rand() % (words.size());
   return words[i];
 }
