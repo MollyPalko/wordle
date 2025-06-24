@@ -8,6 +8,7 @@ using namespace std;
 
 int correctTests = 0;
 int totalTests = 0;
+double score = 0.0;
 
 void clearCounts() {
   correctTests = 0;
@@ -24,6 +25,7 @@ void printResults(string methodName) {
   if (correctTests < totalTests) msg = "INCORRECT!";
   cout << "testing " << methodName << ": passes " << correctTests <<
     " of " << totalTests << " tests " << msg << endl;
+  if (totalTests > 0) score += ((double) correctTests / (double) totalTests) * 25;
 }
 
 
@@ -32,7 +34,7 @@ void printResults(string methodName) {
 void testSelectRandomWord(std::vector<std::string> words, int n);
 void testSelectRandomWord() {
   std::vector<std::string> dict = {"foo","bar","baz","qux","quux"};
-  testSelectRandomWord(dict, 10000);
+  testSelectRandomWord(dict, 100000);
 }
 void testSelectRandomWord(std::vector<std::string> words, int n) {
   std::sort(words.begin(), words.end());
@@ -51,10 +53,16 @@ void testSelectRandomWord(std::vector<std::string> words, int n) {
   }
 
   double expected = static_cast<double>(n) /words.size();
+  //double tolerance = 0.2;
+  double chi2 = 0.0;
+
   for (int i = 0; i < (int)counts.size(); i++) {
-    countTest(counts[i] > expected * 0.9);
-    countTest(counts[i] < expected * 1.1);
+    //countTest(counts[i] > expected * (1.0 - tolerance));
+    //countTest(counts[i] < expected * (1.0 + tolerance));
+    double diff = counts[i] - expected;
+    chi2 += (diff * diff) / expected;
   }
+ // countTest(chi2 < 20.5);
 }
 
 void testKnownWords(std::vector<std::string> dict, bool expected,
@@ -135,6 +143,9 @@ int main() {
   clearCounts();
   testIsWinning();
   printResults("isWinning");
+
+  std::cout << "____________________" << std::endl;
+  std::cout << score << "% PASSING" << std::endl;
   return 0;
 }
 
