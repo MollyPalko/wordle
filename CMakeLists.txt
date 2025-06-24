@@ -12,6 +12,12 @@ set(SOURCES src/Wordle.cpp)
 # Main game executable
 add_executable(wordle src/main.cpp ${SOURCES})
 
-# Tester executable (only built when testing)
-add_executable(wordle_tests src/Tester.cpp ${SOURCES})
+# Optional: Enable building tests
+option(BUILD_TESTS "Build Wordle test executable" OFF)
+
+if(BUILD_TESTS)
+    add_executable(wordle_tests src/Tester.cpp ${SOURCES})
+endif()
+
+
 
