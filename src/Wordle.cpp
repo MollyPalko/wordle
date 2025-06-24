@@ -23,10 +23,33 @@ bool Wordle::isKnownWord(std::string guess)
 std::vector<char> Wordle::getGuessResult(std::string secret, 
     std::string guess)
 {
-  char arr[] = {'X', 'X'};
+  std::vector<char> result(guess.size());
+  std::vector<bool> seen(guess.size(), false);
+
+  // place CORRECT and MISSING markers
+  for (int i = 0; i < guess.size(); i++) {
+    if (guess[i] == secret[i]) {
+      result[i] = Wordle::CORRECT;
+      seen[i] = true;
+    } else {
+      result[i] = Wordle::MISSING;
+    }
+  }
+
+  // place PRESENT markers
+  for (int i = 0; i < guess.size(); i++) {
+    for (int j = 0; j < secret.size(); j++) {
+      if (guess[i] == secret[j] && seen[j] != true) {
+        result[i] = Wordle::PRESENT;
+        seen[j] = true;
+      }
+    }
+  }
   
-  std::vector<char> vector(arr, arr + (sizeof(arr)/sizeof(char)));
-  return vector;
+
+  //std::vector<char> vector(result, result + (sizeof(result)/sizeof(char)));
+  //return vector;
+  return result;
 }
 
 bool Wordle::isWinning(std::vector<char> guessResult)
